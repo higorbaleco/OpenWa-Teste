@@ -85,8 +85,10 @@ if (process.env.MCP_ENABLED === 'true') {
 // explicitly with SERVE_DASHBOARD=false. The path + flags are exported so main.ts can
 // log a clear status line (served / disabled / build missing) at startup.
 export const DASHBOARD_DIST = path.resolve(__dirname, '..', 'dashboard', 'dist');
+export const REPORTS_ROOT = path.resolve(process.cwd(), 'artifacts');
 export const dashboardServingEnabled = process.env.SERVE_DASHBOARD !== 'false';
 export const dashboardBuildPresent = fs.existsSync(path.join(DASHBOARD_DIST, 'index.html'));
+export const reportsBuildPresent = fs.existsSync(REPORTS_ROOT);
 
 const serveStaticModules: Array<Type | DynamicModule> = [];
 if (dashboardServingEnabled && dashboardBuildPresent) {
@@ -109,6 +111,17 @@ if (dashboardServingEnabled && dashboardBuildPresent) {
       // ServeStaticModule has no explicit off switch, so this is a renderPath literal that no
       // real request can match.
       renderPath: '/__openwa_spa_fallback_owned_by_main_ts__',
+    }),
+  );
+}
+
+if (reportsBuildPresent) {
+  serveStaticModules.push(
+    ServeStaticModule.forRoot({
+      rootPath: REPORTS_ROOT,
+      serveRoot: '/reports',
+      exclude: ['/api/{*splat}', '/socket.io/{*splat}', '/mcp', '/mcp/{*splat}'],
+      renderPath: '/__openwa_reports_fallback_owned_by_main_ts__',
     }),
   );
 }

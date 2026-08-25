@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatorio de Leads</title>
+  <style>
+    :root { color-scheme: dark; }
+    body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif; background: radial-gradient(circle at top, #17303a, #081014 55%, #04070a); color: #edf4ee; }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 28px; }
+    .hero, .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09); backdrop-filter: blur(14px); box-shadow: 0 20px 70px rgba(0,0,0,0.25); border-radius: 22px; }
+    .hero { padding: 24px; margin-bottom: 16px; }
+    .card { padding: 18px; margin-bottom: 16px; }
+    h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.02; }
+    .muted { color: #a8b7ad; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .metric { padding: 14px; border-radius: 18px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+    .metric .label { color: #a8b7ad; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .14em; }
+    .metric .value { font-size: 1.7rem; font-weight: 750; margin-top: 8px; }
+    .filters { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    input, select { width: 100%; box-sizing: border-box; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.22); color: inherit; padding: 11px 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; vertical-align: top; padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    th { color: #a8b7ad; font-size: .72rem; text-transform: uppercase; letter-spacing: .14em; }
+    .pill { display: inline-flex; padding: 5px 9px; border-radius: 999px; font-size: .72rem; font-weight: 700; text-transform: uppercase; }
+    .genuine-buyer { background: rgba(135, 241, 139, 0.12); color: #baf8bd; }
+    .warm { background: rgba(246, 193, 119, 0.12); color: #ffe1b1; }
+    .cold { background: rgba(255,255,255,0.08); color: #d0dad3; }
+    .personal { background: rgba(158, 178, 255, 0.12); color: #d1dcff; }
+    .evidence { color: #d8e1d9; line-height: 1.45; }
+    .row-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    a.btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 11px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.08); color: inherit; }
+    @media (max-width: 980px) {
+      .grid, .filters { grid-template-columns: 1fr 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Relatorio de Leads</h1>
+      <p class="muted" style="max-width: 72ch; line-height: 1.6; margin: 10px 0 0;">
+        Extraido direto do SQLite local, com as 20 conversas privadas mais recentes. Os valores em R$ sao inferencias do texto e servem para triagem comercial, nao para contabilidade.
+      </p>
+      <div class="row-actions">
+        <a class="btn" href="leads-report.csv" download>Download CSV</a>
+        <a class="btn" href="leads-report.json" download>Download JSON</a>
+      </div>
+    </section>
+
+    <div class="grid" id="metrics"></div>
+
+    <section class="card">
+      <div class="filters">
+        <input id="search" type="search" placeholder="Buscar contato, chatId ou trecho" />
+        <select id="interest"></select>
+        <select id="sentiment"></select>
+        <select id="scope">
+          <option value="all">Todos</option>
+          <option value="commercial">Somente comerciais</option>
+          <option value="personal">Somente pessoais</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Contato</th>
+            <th>ChatId</th>
+            <th>Status</th>
+            <th>Sentimento</th>
+            <th>Fechado</th>
+            <th>Pipeline</th>
+            <th>Evidencias</th>
+            <th>Ultima interacao</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script id="report-data" type="application/json">{"payload":{"generatedAt":"2026-08-14T14:42:02.370Z","sessionId":"8df95b4d-18bf-4faf-a81b-765800de0979","sessionName":"higor-mago","title":"Relatorio de leads extraido do SQLite local","conversations":[{"contact":"Samuel Ferreira","chatId":"7946092195857@lid","interestStatus":"genuine-buyer","sentiment":"neutral","closedValue":0,"openPipelineValue":100000,"evidenceSnippets":["*CUSTO DISPAROS API OFICIAL*\n\nAbaixo de 10.000 - R$0,35 \n10.000 a 30.000 - R$0,23\n30.000 a 100.000 - R$0,22\n100.000 a 300.000 - R$0,20 \n300.000 a 5...","*CUSTO DISPAROS API OFICIAL*\n\nAbaixo de 10.000 - R$0,35 \n10.000 a 30.000 - R$0,23\n30.000 a 100.000 - R$0,22\n100.000 a 300.000 - R$0,20 \n300.000 a 5..."],"lastInteraction":"2026-08-14T14:34:49.000Z","messageCount":5,"nonEmptyMessageCount":2,"leadScore":52},{"contact":"Felipe Otoni","chatId":"187707267481853@lid","interestStatus":"warm","sentiment":"positive","closedValue":0,"openPipelineValue":null,"evidenceSnippets":["Sim todas"],"lastInteraction":"2026-08-14T14:37:43.000Z","messageCount":8,"nonEmptyMessageCount":4,"leadScore":30},{"contact":"175101588807813@lid","chatId":"175101588807813@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:38:44.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"90185807216885@lid","chatId":"90185807216885@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"68651478696156@lid","chatId":"68651478696156@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"54014163079397@lid","chatId":"54014163079397@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"50444441264194@lid","chatId":"50444441264194@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"33342166675651@lid","chatId":"33342166675651@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"268414299930637@lid","chatId":"268414299930637@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"23858560131149@lid","chatId":"23858560131149@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"229750870171672@lid","chatId":"229750870171672@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"219482156957799@lid","chatId":"219482156957799@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"21591471726626@lid","chatId":"21591471726626@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"197894913171618@lid","chatId":"197894913171618@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"174410317168672@lid","chatId":"174410317168672@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"153064363270170@lid","chatId":"153064363270170@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"146235885375692@lid","chatId":"146235885375692@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"11502694174967@lid","chatId":"11502694174967@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:36:02.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"248687833911497@lid","chatId":"248687833911497@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:34:28.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5},{"contact":"59747843752143@lid","chatId":"59747843752143@lid","interestStatus":"cold","sentiment":"neutral","closedValue":0,"openPipelineValue":null,"evidenceSnippets":[],"lastInteraction":"2026-08-14T14:34:27.000Z","messageCount":2,"nonEmptyMessageCount":0,"leadScore":5}]},"summary":{"total":20,"commercialTotal":20,"byInterest":{"genuine-buyer":1,"warm":1,"cold":18,"personal":0},"bySentiment":{"positive":1,"neutral":19,"negative":0},"closedCount":0,"closedTotal":0,"averageClosedValue":0,"openPipelineTotal":100000}}</script>
+  <script>
+    const report = JSON.parse(document.getElementById('report-data').textContent || '{}');
+    const rows = (report.payload && report.payload.conversations) || [];
+    const summary = report.summary || {};
+    const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+    const metricItems = [
+      ['Total', summary.total || 0],
+      ['Comerciais', summary.commercialTotal || 0],
+      ['Fechados', summary.closedCount || 0],
+      ['Pipeline aberto', currency.format(summary.openPipelineTotal || 0)],
+    ];
+
+    const metrics = document.getElementById('metrics');
+    metrics.innerHTML = metricItems.map(([label, value]) => {
+      return [
+        '<div class="metric">',
+        '<div class="label">' + label + '</div>',
+        '<div class="value">' + value + '</div>',
+        '</div>',
+      ].join('');
+    }).join('');
+
+    const interestSelect = document.getElementById('interest');
+    const sentimentSelect = document.getElementById('sentiment');
+    const interestValues = ['all', 'genuine-buyer', 'warm', 'cold', 'personal'];
+    const sentimentValues = ['all', 'positive', 'neutral', 'negative'];
+    interestSelect.innerHTML = interestValues.map(v => '<option value="' + v + '">' + v + '</option>').join('');
+    sentimentSelect.innerHTML = sentimentValues.map(v => '<option value="' + v + '">' + v + '</option>').join('');
+
+    const state = { search: '', interest: 'all', sentiment: 'all', scope: 'all' };
+    const tbody = document.getElementById('tbody');
+
+    function render() {
+      const q = state.search.trim().toLowerCase();
+      const filtered = rows.filter(row => {
+        if (state.interest !== 'all' && row.interestStatus !== state.interest) return false;
+        if (state.sentiment !== 'all' && row.sentiment !== state.sentiment) return false;
+        if (state.scope === 'commercial' && row.interestStatus === 'personal') return false;
+        if (state.scope === 'personal' && row.interestStatus !== 'personal') return false;
+        if (!q) return true;
+        const haystack = [
+          row.contact,
+          row.chatId,
+          row.interestStatus,
+          row.sentiment,
+          (row.evidenceSnippets || []).join(' '),
+          row.lastInteraction,
+        ].join(' ').toLowerCase();
+        return haystack.includes(q);
+      });
+
+      tbody.innerHTML = filtered.map(row => {
+        const evidence = (row.evidenceSnippets || []).map(snippet => '• ' + snippet).join('<br/>');
+        return [
+          '<tr>',
+          '<td>' + (row.contact || '') + '</td>',
+          '<td>' + (row.chatId || '') + '</td>',
+          '<td><span class="pill ' + row.interestStatus + '">' + row.interestStatus + '</span></td>',
+          '<td>' + (row.sentiment || '') + '</td>',
+          '<td>' + currency.format(row.closedValue || 0) + '</td>',
+          '<td>' + (row.openPipelineValue ? currency.format(row.openPipelineValue) : '') + '</td>',
+          '<td class="evidence">' + evidence + '</td>',
+          '<td>' + (row.lastInteraction || '') + '</td>',
+          '</tr>',
+        ].join('');
+      }).join('');
+    }
+
+    document.getElementById('search').addEventListener('input', event => {
+      state.search = event.target.value;
+      render();
+    });
+    interestSelect.addEventListener('change', event => {
+      state.interest = event.target.value;
+      render();
+    });
+    sentimentSelect.addEventListener('change', event => {
+      state.sentiment = event.target.value;
+      render();
+    });
+    document.getElementById('scope').addEventListener('change', event => {
+      state.scope = event.target.value;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

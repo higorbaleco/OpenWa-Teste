@@ -9,6 +9,7 @@ import {
   Key,
   FileText,
   ClipboardList,
+  Target,
   LogOut,
   Send,
   Server,
@@ -41,6 +42,7 @@ const allNavItems = [
   { to: '/templates', icon: ClipboardList, key: 'templates' as const, adminOnly: false },
   { to: '/api-keys', icon: Key, key: 'apiKeys' as const, adminOnly: true },
   { to: '/message-tester', icon: Send, key: 'messageTester' as const, adminOnly: false },
+  { to: '/leads', icon: Target, key: 'leadsAnalyzer' as const, adminOnly: false },
   // Backend /infra/* is ADMIN-only; hide the nav item from non-admins (UX + defense-in-depth).
   { to: '/infrastructure', icon: Server, key: 'infrastructure' as const, adminOnly: true },
   { to: '/plugins', icon: Puzzle, key: 'plugins' as const, adminOnly: true },
@@ -186,7 +188,8 @@ export function Layout({ onLogout, userRole }: LayoutProps) {
 
         <nav className="sidebar-nav">
           {navItems.map(({ to, icon: Icon, key }) => {
-            const label = t(`nav.${key}`);
+            const label =
+              key === 'leadsAnalyzer' ? 'Leads Lab' : t(`nav.${key}`);
             return (
               <NavLink
                 key={to}

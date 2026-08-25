@@ -35,6 +35,7 @@
     "check:sdk-coverage": "node scripts/check-sdk-coverage.mjs",
     "check:sdk-events": "node scripts/check-sdk-events.mjs",
     "check:sdk-docs": "node scripts/check-sdk-docs.mjs",
+    "leads:extract": "node scripts/generate-leads-report.mjs",
     "openapi:export": "ts-node scripts/export-openapi.ts openapi.json",
     "openapi:check": "ts-node scripts/export-openapi.ts /tmp/openapi.generated.json && diff -u openapi.json /tmp/openapi.generated.json",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
